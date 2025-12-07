@@ -1,0 +1,116 @@
+Doctors = ["General",
+           "Pediatrician",
+           "Gynacology",
+           "Cardialogy",
+           "Dermatology"]
+
+Appointment_Slots = {doc: 3 for doc in Doctors}
+
+Appointments = []
+
+
+def Available_doctors_slots():
+    print("\nAvailable Doctors:")
+    for doctor in Doctors:
+        print(f"{doctor} -- Slots: {Appointment_Slots[doctor]}")
+    print()  # blank line
+
+
+def Show_Appointments():
+    print("\nBooked Appointments:")
+    if Appointments:
+        for patient_name, doctor in Appointments:
+            print(f"{patient_name} with {doctor}")
+    else:
+        print("No Appointments booked yet")
+    print()
+
+
+def Book_Appointments():
+    try:
+        patient_name = input("Enter the Patient Name: ").strip()
+
+        if not patient_name.isalpha():
+            print("Invalid name. Name should contain only letters.\n")
+            return
+
+        print("Patient Name:", patient_name)
+        Available_doctors_slots()
+
+        doctor_name_input = input("Enter the Specialist name to book Appointment: ").strip()
+
+        # Normalize input (case-insensitive match)
+        doctor_name = None
+        for doc in Doctors:
+            if doctor_name_input.lower() == doc.lower():
+                doctor_name = doc
+                break
+
+        if doctor_name is None:
+            print("Invalid Doctor Name -- Check the available doctors and try again.\n")
+            return
+
+        print("Doctor Name:", doctor_name)
+
+        if Appointment_Slots[doctor_name] > 0:
+            Appointment_Slots[doctor_name] -= 1
+            Appointments.append((patient_name, doctor_name))
+            print(f"Appointment booked successfully with the {doctor_name} specialist.\n")
+        else:
+            print("All appointments booked for the day for this doctor.\n")
+
+    except Exception as e:
+        print("Error found while booking appointment:", e)
+
+
+def Cancel_Appointments():
+    patient_name = input("Enter the Patient Name to cancel Appointment: ").strip()
+
+    # Find the appointment for this patient
+    for appointment in Appointments:
+        if appointment[0].lower() == patient_name.lower():
+            Appointments.remove(appointment)
+            doctor_name = appointment[1]
+            Appointment_Slots[doctor_name] += 1
+            print(f"Appointment for {patient_name} has been cancelled successfully.\n")
+            break
+    else:
+        # This else belongs to the for-loop (executes only if not broken)
+        print(f"{patient_name} has not booked any appointment.\n")
+
+
+while True:
+    print("----------*************-------------")
+    print("1. Availability of Doctors & Slots")
+    print("2. Show Appointments")
+    print("3. Book Appointment")
+    print("4. Cancel Appointment")
+    print("5. Exit")
+    print("----------*************-------------")
+
+    try:
+        option = int(input("Enter your option: "))
+    except ValueError:
+        print("Invalid input. Please enter a number between 1 and 5.\n")
+        continue
+
+    if option == 1:
+        Available_doctors_slots()
+
+    elif option == 2:
+        Show_Appointments()
+
+    elif option == 3:
+        Book_Appointments()
+
+    elif option == 4:
+        Cancel_Appointments()
+
+    elif option == 5:
+        print("Thank you!")
+        break
+
+    else:
+        print("Invalid option. Please try again.\n")
+        
+
